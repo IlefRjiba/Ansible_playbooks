@@ -1,0 +1,7 @@
+[slaves]
+slave2
+slave1
+
+[slaves:vars]
+ansible_user=root
+ansible_password=ok

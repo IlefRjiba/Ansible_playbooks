@@ -1,0 +1,28 @@
+---
+- name: first playbook
+  hosts: slaves
+  gather_facts: false
+
+  tasks:
+  - name: creating a directory
+    file:
+      name: teamwill
+      state: directory
+
+  - name: creating a file in slave1
+    file:
+            path: "teamwill/file1.txt"
+            state: touch
+    when: inventory_hostname == "slave1"
+  
+  - name: copying role 
+    import_role:
+            name: copy
+  - name: package installation using a loop
+    yum:
+            name: "{{ item }}"
+            state: latest
+    loop:
+            - httpd
+            - nano
+  - name: creating a directory and copying the index.html file  

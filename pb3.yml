@@ -1,0 +1,15 @@
+---
+- name: third playbook
+  hosts: slaves
+
+  tasks:
+  - name: adding a user
+    user: 
+        name: Simone
+        password: "SimoneSimone"
+        groups: root
+
+  - name:
+        name: Simone
+        remove: true
+        state: absent

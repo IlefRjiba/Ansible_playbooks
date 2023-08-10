@@ -1,0 +1,28 @@
+---
+- name: fourth playbook
+  hosts: slaves
+  vars:
+          users:
+                  - name: rjiba
+                    surname: ilef
+                  - name: rjiba
+                    surname: ithar
+                  - name: rjiba
+                    surname: oubay
+
+  tasks:
+  - name: using a template
+    template:
+            src: /home/ilefrjiba/Documents/ansible/templates/template.j2 
+            dest: teamwill/{{ansible_host}}
+            mode: 0600
+
+  - name: creating gitconfig
+    template:
+            src: /home/ilefrjiba/Documents/ansible/templates/gitconfig.j2
+            dest: teamwill/{{ansible_host}}/{{user.surname}}_gitconfig
+    loop: "{{users}}"
+    loop_control:
+        loop_var: user
+
+            

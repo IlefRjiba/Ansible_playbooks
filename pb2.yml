@@ -1,0 +1,56 @@
+---
+- name: second playbook
+  hosts: slaves
+
+  tasks:
+  - name: creating a directory
+    file:
+      name: teamwill/{{inventory_hostname}}
+      state: directory
+
+  - name: creating a new index.html
+    copy:
+            dest: /root/teamwill/{{inventory_hostname}}/new_index.html
+            content:
+                    C'est une nouvelle page !
+  - name: updating the apache configuration
+    replace:
+            path: /etc/httpd/conf/httpd.conf
+            regexp: 'DirectoryIndex index.html'
+            replace: 'DirectoryIndex /root/teamwill/{{inventory_hostname}}/new_index.html'
+    notify:
+            - restart slaves
+            
+  - name: starting apache
+    service:
+            name: httpd
+            state: started
+            enabled: yes
+         
+    notify:
+            - check status with systemd
+            - printing the status
+              
+  - name: adding port listening
+    firewalld:
+            port: 80/tcp
+            permanent: true
+            state: enabled
+            immediate: true 
+
+              ###############################################
+
+  handlers:
+          - name: restart slaves
+            reboot:
+                    msg: "Reboot initiated by ansible"
+
+          - name: check status with systemd
+            systemd:
+                    name: httpd
+            register: res
+
+          - name: printing the status
+            debug:
+                    var: res.status.ActiveState
+          
